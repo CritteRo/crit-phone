@@ -5,8 +5,7 @@ author 'CritteR / CritteRo'
 description 'A collection of apps for the scalePhone framework.'
 
 dependencies {
-    'pma-voice',
-    'scalePhone'
+    'scalePhone',
 }
 
 client_scripts {
@@ -14,6 +13,7 @@ client_scripts {
     'client/cl_phone_contacts.lua',
     'client/cl_phone_messagesAndEmail.lua',
     'client/cl_phone_lifeinvader.lua',
+    'client/cl_phone_moreApps.lua',
 }
 
 server_scripts {
