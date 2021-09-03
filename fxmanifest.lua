@@ -13,6 +13,7 @@ client_scripts {
     'client/cl_phone_homepage.lua',
     'client/cl_phone_contacts.lua',
     'client/cl_phone_messagesAndEmail.lua',
+    'client/cl_phone_lifeinvader.lua',
 }
 
 server_scripts {

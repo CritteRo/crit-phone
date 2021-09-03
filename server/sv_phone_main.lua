@@ -1,6 +1,7 @@
 RegisterNetEvent('critPhoneApps.sv.SetSleepMode')
 RegisterNetEvent('critPhoneApps.sv.SendSMS')
 RegisterNetEvent('critPhoneApps.sv.SendCall')
+RegisterNetEvent('critPhoneApps.sv.SendPost')
 RegisterNetEvent('critPhoneApps.sv.SendCallUpdate')
 
 
@@ -98,9 +99,19 @@ AddEventHandler('critPhoneApps.sv.SendSMS', function(to, message, isBot, svID)
             end
         end
         if senderid ~= 0 then --if a player id was successfully found.
-            TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
-            Citizen.Wait(200)
-            TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+            if inCall[senderid] ~= nil then
+                if inCall[senderid].sleepMode == 0 or inCall[senderid].sleepMode == false then --if sleepMode == false, send the message.
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
+                    Citizen.Wait(200)
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+                else --if sleepMode is active, send "error" message back to source
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = "Thank you for reaching out to me!\n\nAt the moment, I do not wish to be contacted via message."}, false) --sending the message back to source, but with a "itsMine" tag.
+                end
+            else
+                TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
+                Citizen.Wait(200)
+                TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+            end
             --if you have a notification script, you can plug it here.
         else
             --player not found, trigger a notification here, maybe.
@@ -108,6 +119,8 @@ AddEventHandler('critPhoneApps.sv.SendSMS', function(to, message, isBot, svID)
     end
 end)
 
+
+--[[  ::  CALLING  ::  ]]--
 AddEventHandler('critPhoneApps.sv.SendCall', function(name, pic, isBot, svID)
     local src = source
     if isBot ~= nil and isBot == true then --is playerSource trying to call a bot?
@@ -190,4 +203,15 @@ AddEventHandler('critPhoneApps.sv.SendCallUpdate', function(update)
             end
         end
     end
+end)
+
+
+--[[  ::  LIFE INVADER  ::  ]]--
+--Keep in mind that life invader posts don't get saved. When a player joins, he won't be able to see past posts.
+AddEventHandler('critPhoneApps.sv.SendPost', function(post)
+    local src = source
+    local Name = GetPlayerName(src) --name that will show to everyone in the post.
+    local triggersNotification = true -- if "true", it will add a +1 on the LifeInvader icon on the phone homepage.
+    TriggerClientEvent('critPhoneApps.ReceivePost', -1, {name = Name, title = post.title, message = post.message}, triggersNotification) --sends the post to all online players.
+    --you might want some notification here. When a post gets created.
 end)
