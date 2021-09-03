@@ -1,3 +1,9 @@
+sleepMode = exports.scalePhone:sleepModeStatus()
+
+AddEventHandler('scalePhone.Event.SleepModeChanged', function(state) --premade event. Called whenever Sleep Mode is toggled in the settings.
+    sleepMode = state
+    TriggerServerEvent('critPhoneApps.sv.SetSleepMode', sleepMode)
+end)
 
 --[[  ::  HOMEPAGE APPS  ::  ]]--
 -- Order of events matters here. Every event will add a new app with the specified appID, and add the shortcut on the homepage. Only the first 9 apps will show on the homepage.

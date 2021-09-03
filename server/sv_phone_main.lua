@@ -1,8 +1,11 @@
 RegisterNetEvent('critPhoneApps.sv.SetSleepMode')
+RegisterNetEvent('critPhoneApps.sv.SendSMS')
+RegisterNetEvent('critPhoneApps.sv.SendCall')
+RegisterNetEvent('critPhoneApps.sv.SendCallUpdate')
 
 
 bots = { --want bots on the server? For groups? Or maybe a "Help Desk"? This is where you add them.
-    --[0] = {name = "Bot Name", pic = 'CHAR_MP_FM_CONTACT', isBot = true, botEvent = "botEvent", svID = -1},
+    [0] = {name = "Bot Name", pic = 'CHAR_MP_FM_CONTACT', isBot = true, botEvent = "botEvent", svID = -1},
 }
 
 inCall = { -- Every online player MUST HAVE a array here (for calls). I will make sure this happens, don't worry.
@@ -22,7 +25,7 @@ AddEventHandler('critPhoneApps.sv.GatherContacts', function() --gathering a cont
     local row = 0
     contacts = {}
     for i,k in pairs(bots) do --building bots first
-        onlinePlayers[row] = k
+        contacts[row] = k
         row = row + 1
     end
     for _,player in ipairs(GetPlayers()) do --building online players, from ALL ONLINE PLAYERS. If you can get a contact array, this is where you would want it.
@@ -30,6 +33,21 @@ AddEventHandler('critPhoneApps.sv.GatherContacts', function() --gathering a cont
         row = row + 1
     end
     TriggerClientEvent('critPhoneApps.UpdateContacts', -1, contacts) --updating contact list for ALL players.
+end)
+
+RegisterCommand('critgetcontacts', function(source, args)
+    local src = source
+    if src == 0 then -- only if it's the console
+        for i,player in ipairs(GetPlayers()) do
+            inCall[player] = { --making sure we have the goddamn array set.
+                name = GetPlayerName(player),
+                status = 0,
+                sleepMode = 0,
+                lang = "en",
+            }
+        end 
+        TriggerEvent('critPhoneApps.sv.GatherContacts')
+    end
 end)
 
 AddEventHandler('critPhoneApps.sv.SetSleepMode', function(mode) --setting sleep mode for source. Used only in player-made calls and messages. Not affected by emails or bots >:)
@@ -56,4 +74,120 @@ AddEventHandler('playerJoining', function(oldID) --if you have your own way of g
         lang = "en",
     }
     TriggerEvent('critPhoneApps.sv.GatherContacts')
+end)
+
+--[[  ::  MESSAGING  ::  ]]--
+AddEventHandler('critPhoneApps.sv.SendSMS', function(to, message, isBot, svID)
+    local src = source
+    if isBot ~= nil and isBot == true then --is playerSource trying to message a bot?
+        for i,k in pairs(bots) do
+            if k.name == to then --if yes, and the bot name matches, then:
+                TriggerEvent(k.botEvent, src, message, k) -- triggers the bot's event, with params: playerSource, player's raw message and the bot array.
+            end
+        end
+    else --if not sending to a bot, then:
+        local senderid = 0
+        if tonumber(svID) ~= nil and GetPlayerPing(tonumber(svID)) ~= 0 then --if svID exists and is a valid player id.
+            senderid = tonumber(svID) 
+        else
+            for _,player in ipairs(GetPlayers()) do -- trying to find the player, from the contact name.
+                if GetPlayerName(player) == to then
+                    senderid = player
+                    break
+                end
+            end
+        end
+        if senderid ~= 0 then --if a player id was successfully found.
+            TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
+            Citizen.Wait(200)
+            TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+            --if you have a notification script, you can plug it here.
+        else
+            --player not found, trigger a notification here, maybe.
+        end
+    end
+end)
+
+AddEventHandler('critPhoneApps.sv.SendCall', function(name, pic, isBot, svID)
+    local src = source
+    if isBot ~= nil and isBot == true then --is playerSource trying to call a bot?
+        TriggerClientEvent('critPhoneApps.ReceiveCall', src, "dialing", name, pic, isBot) -- we keep him in dialing for some time.
+        Citizen.Wait(math.random(2,6) * 1000)
+        TriggerClientEvent('critPhoneApps.ReceiveCall', src, "hangup", name, pic, isBot) --then hang up.
+        --[[for i,k in pairs(bots) do  -- if you want to trigger the bot's event, you can do it here. 
+            if k.name == name then
+                TriggerEvent(k.botEvent, src, "scalePhone.Internal.BotWasCalled", k)
+            end
+        end]]
+    else -- if not a bot, then:
+        local id = nil
+        for i,k in pairs(inCall) do --if inCall[playerSource] exists. Told you it was important
+            if k.name == name then
+                if GetPlayerPing(i) ~= 0 then
+                    id = i --we found our player id.
+                    break
+                end
+            end
+        end
+        if id ~= nil then
+            if inCall[id].status == 0 then
+                if inCall[id].sleepMode == false or inCall[id].sleepMode == 0 then
+                    local row = #calls + 1
+                    calls[row] = {caller1 = src, caller2 = id, status = "dialing" --[[dialing, connected, completed]]} --creating a new call id.
+                    inCall[src].status = row --setting the call id as status.
+                    inCall[id].status = row --setting the call id as status.
+                    setPlayerCallChannel(src, row) --check sv_connections.lua to set the correct voice-chat resource.
+                    TriggerClientEvent('critPhoneApps.ReceiveCall', src, "dialing", GetPlayerName(id), "CHAR_BLANK_ENTRY", false) --sending 'dialing' call update to source
+                    TriggerClientEvent('critPhoneApps.ReceiveCall', id, "calling", GetPlayerName(src), "CHAR_BLANK_ENTRY", false) --sending the call to the called player.
+                else
+                    --sleep mode is activated for the other caller. Rejecting.
+                    TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+                end
+            else
+                --player is already in a call. Rejecting yours.
+                TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+            end
+        else
+            --player couldn't be found. Rejecting the call
+            TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+        end
+    end
+end)
+
+AddEventHandler('critPhoneApps.sv.SendCallUpdate', function(update)
+    local src = source
+    if inCall[src] ~= nil and inCall[src].status ~= 0 then
+        local foundCall = nil
+        for i,k in pairs(calls) do --looking a call id where source is present
+            if k.caller1 == src or k.caller2 == src then
+                if k.status ~= "completed" then --making sure the call didn't end already.
+                    foundCall = i
+                end
+            end
+        end
+        if foundCall ~= nil then
+            local other = nil
+            if calls[foundCall].caller1 == src then --checking if the source if caller1 or caller2 in the call id.
+                other = calls[foundCall].caller2
+            elseif calls[foundCall].caller2 == src then
+                other = calls[foundCall].caller1
+            end
+            if update == "answer" then
+                --this is where you set the Call Channel for caller2
+                setPlayerCallChannel(src, foundCall)
+                calls[foundCall].status = "connected"
+                TriggerClientEvent('critPhoneApps.ReceiveCall', src, "responded", GetPlayerName(other), "CHAR_BLANK_ENTRY", false)
+                TriggerClientEvent('critPhoneApps.ReceiveCall', other, "responded", GetPlayerName(src), "CHAR_BLANK_ENTRY", false)
+            elseif update == "hangup" then
+                --this is where you cancel both calls.
+                inCall[src].status = 0
+                inCall[other].status = 0
+                calls[foundCall].status = "completed"
+                setPlayerCallChannel(src, 0)
+                setPlayerCallChannel(other, 0)
+                TriggerClientEvent('critPhoneApps.ReceiveCall', src, "hangup", GetPlayerName(other), "CHAR_BLANK_ENTRY", false)
+                TriggerClientEvent('critPhoneApps.ReceiveCall', other, "hangup", GetPlayerName(src), "CHAR_BLANK_ENTRY", false)
+            end
+        end
+    end
 end)

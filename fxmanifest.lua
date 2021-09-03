@@ -11,6 +11,8 @@ dependencies {
 
 client_scripts {
     'client/cl_phone_homepage.lua',
+    'client/cl_phone_contacts.lua',
+    'client/cl_phone_messagesAndEmail.lua',
 }
 
 server_scripts {
