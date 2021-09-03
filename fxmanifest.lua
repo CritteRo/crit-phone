@@ -5,7 +5,7 @@ author 'CritteR / CritteRo'
 description 'A collection of apps for the scalePhone framework.'
 
 dependencies {
-    'pmaVoice',
+    'pma-voice',
     'scalePhone'
 }
 

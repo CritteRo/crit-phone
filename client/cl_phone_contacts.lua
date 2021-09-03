@@ -100,3 +100,11 @@ AddEventHandler('critPhoneApps.CloseCall', function(data)
     TriggerServerEvent('critPhoneApps.sv.SendCallUpdate', 'hangup')
     TriggerEvent('scalePhone.GoBackApp', data)
 end)
+
+
+--[[ IN CASE OF MUMBLE VOIP. PLEASE UPGRADE TO PMA-VOICE INSTEAD.
+RegisterNetEvent('critPhoneApps.SetPlayerCallChannel')
+AddEventHandler('critPhoneApps.SetPlayerCallChannel', function(channel)
+    exports['mumble-voip']:SetCallChannel(tonumber(channel))
+end)
+]]

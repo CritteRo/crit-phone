@@ -6,7 +6,10 @@ function setPlayerCallChannel(source, callChannel)
         --If your voip resource requires to set that on the client side...good luck.
 
         --PMA-VOICE
-        exports.pmaVoice:setPlayerCall(id, channel) -- pmaVoice is the resource name. You might have it different.
+        exports['pma-voice']:setPlayerCall(id, channel) -- pmaVoice is the resource name. You might have it different.
+
+        --MUMBLE-VOIP (I suggest upgrading to pma-voice instead. You need to uncomment the Event in cl_phone_contacts.lua too)
+        --TriggerClientEvent('critPhoneApps.SetPlayerCallChannel', id, channel)
     else
         return 0
     end
