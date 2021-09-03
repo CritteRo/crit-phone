@@ -1,5 +1,5 @@
 # crit-phone
-## crit-phone is a colection of phone apps for the scalePhone framework.
+## crit-phone is a colection of phone apps for the [scalePhone](https://github.com/CritteRo/scalePhone) framework.
 
 ## Contains:
 * Contacts App:
