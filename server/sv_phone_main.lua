@@ -6,7 +6,7 @@ RegisterNetEvent('critPhoneApps.sv.SendCallUpdate')
 
 
 bots = { --want bots on the server? For groups? Or maybe a "Help Desk"? This is where you add them.
-    [0] = {name = "Bot Name", pic = 'CHAR_MP_FM_CONTACT', isBot = true, botEvent = "botEvent", svID = -1},
+    --[0] = {name = "Bot Name", pic = 'CHAR_MP_FM_CONTACT', isBot = true, botEvent = "botEvent", svID = -1},
 }
 
 inCall = { -- Every online player MUST HAVE a array here (for calls). I will make sure this happens, don't worry.
