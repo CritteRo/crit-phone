@@ -10,7 +10,7 @@ dependencies {
 }
 
 client_scripts {
-    'client/cl_phone_main.lua',
+    'client/cl_phone_homepage.lua',
 }
 
 server_scripts {
