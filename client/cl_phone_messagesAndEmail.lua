@@ -5,7 +5,7 @@ TriggerEvent('scalePhone.BuildApp', 'app_messageView', "messageView", "Rules", 0
 TriggerEvent('scalePhone.BuildApp', 'app_emailView', "emailView", "Rules", 0, 0, "", 'scalePhone.GoBackApp', {backApp = 'app_emails'}) --creating custom app for emails.
 
 AddEventHandler('critPhoneApps.ReceiveEmail', function(email)
-    local mails = {title = email.title, to = email.to, from = email.from, message = email.message, event = 'critPhoneApps.OpenEmail'}
+    local mails = {title = email.title, to = email.to, from = email.from, message = email.message, event = 'critPhoneApps.OpenEmail', canOpenMenu = false, selectEvent = ""}
     mails.eventParams = mails
     TriggerEvent('scalePhone.BuildAppButton', 'app_email', mails, true, -1)
     TriggerEvent('scalePhone.AddAppNotification', 'app_email')
