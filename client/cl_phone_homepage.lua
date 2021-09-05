@@ -35,7 +35,7 @@ pad = {text = 'GO', event = "critPhoneApps.UseNumpadNumber", eventParams = {add 
 TriggerEvent('scalePhone.BuildAppButton', 'app_numpad', pad, false, -1)
 
 AddEventHandler('scalePhone.Event.GetNumpadNumber', function(number) --predefined in the framework. Whenever you select a digit, this event will get triggered.
-    numpadNumber = number
+    numpadNumber = tonumber(number) --I think events sends only strings. So we make sure here that it's a number.
 end)
 
 AddEventHandler('critPhoneApps.UseNumpadNumber', function() --triggered whenever you hit the 'go' button on numpad

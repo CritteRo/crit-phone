@@ -16,6 +16,7 @@ AddEventHandler('critPhoneApps.UpdateContacts', function(contacts) --we receive 
 end)
 
 TriggerEvent('scalePhone.BuildApp', 'call_screen', "callscreen", "Call", 4, 0, "", "critPhoneApps.CloseCall", {backApp = 'app_contacts', contact = "unk", pic = "", status = "DIALING", canAnswer = false, selectEvent = ""})
+
 AddEventHandler('critPhoneApps.OpenContactView', function(data) --this is the contact view. Where we have multiple options, like calling or messaging.
     TriggerEvent('scalePhone.BuildApp', 'app_contact_view', "settings", data.name, 5, 0, "", "scalePhone.GoBackApp", {backApp = 'app_contacts'}) --you can build the app how many times you want. If it's the same appID, it will just overwrite it (and clear all buttons!)
     TriggerEvent('scalePhone.BuildAppButton', 'app_contact_view', {text = "Call", icon = 25, event = "critPhoneApps.SendCall", eventParams = data}, false, -1)

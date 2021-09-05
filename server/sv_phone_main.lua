@@ -101,16 +101,16 @@ AddEventHandler('critPhoneApps.sv.SendSMS', function(to, message, isBot, svID)
         if senderid ~= 0 then --if a player id was successfully found.
             if inCall[senderid] ~= nil then
                 if inCall[senderid].sleepMode == 0 or inCall[senderid].sleepMode == false then --if sleepMode == false, send the message.
-                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {svID = senderid, contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
                     Citizen.Wait(200)
-                    TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {svID = src, contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
                 else --if sleepMode is active, send "error" message back to source
-                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = "Thank you for reaching out to me!\n\nAt the moment, I do not wish to be contacted via message."}, false) --sending the message back to source, but with a "itsMine" tag.
+                    TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {svID = senderid, contact = GetPlayerName(senderid), message = "Thank you for reaching out to me!\n\nAt the moment, I do not wish to be contacted via message."}, false) --sending the message back to source, but with a "itsMine" tag.
                 end
             else
-                TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
+                TriggerClientEvent('critPhoneApps.ReceiveMessage', src, {svID = senderid,contact = GetPlayerName(senderid), message = message}, true) --sending the message back to source, but with a "itsMine" tag.
                 Citizen.Wait(200)
-                TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
+                TriggerClientEvent('critPhoneApps.ReceiveMessage', senderid, {svID = src, contact = GetPlayerName(src), message = message}, false) --sending the message to the sender player id.
             end
             --if you have a notification script, you can plug it here.
         else
