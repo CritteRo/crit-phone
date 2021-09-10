@@ -7,6 +7,12 @@ end)
 
 AddEventHandler('critPhoneApps.ChangePhoneSize', function(size)
     exports.scalePhone:setPhoneDimensions(size)
+    --[[
+        exports.scalePhone:setPhoneDimensions(text, scale, x, y, z)
+        text = "default", "custom", "small", "large" or "huge"
+        if text == "custom" then you can use scale, x, y, z as params, to set the scale and coords of the frontend phone.
+        you can use `local scale, x, y, z = exports.scalePhone:getPhoneDimensions()` to get the current phone dimensions.
+    ]]
 end)
 
 --[[  ::  HOMEPAGE APPS  ::  ]]--
