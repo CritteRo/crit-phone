@@ -5,6 +5,10 @@ AddEventHandler('scalePhone.Event.SleepModeChanged', function(state) --premade e
     TriggerServerEvent('critPhoneApps.sv.SetSleepMode', sleepMode)
 end)
 
+AddEventHandler('critPhoneApps.ChangePhoneSize', function(size)
+    exports.scalePhone:setPhoneDimensions(size)
+end)
+
 --[[  ::  HOMEPAGE APPS  ::  ]]--
 -- Order of events matters here. Every event will add a new app with the specified appID, and add the shortcut on the homepage. Only the first 9 apps will show on the homepage.
 TriggerEvent('scalePhone.BuildHomepageApp', 'app_contacts', "contacts", "Contacts", 5, 0, "", "scalePhone.GoToHomepage", {}) -- 1
@@ -16,6 +20,13 @@ TriggerEvent('scalePhone.BuildHomepageApp', 'app_gps', "gps", "GPS", 58, 0, "", 
 TriggerEvent('scalePhone.BuildHomepageApp', 'app_more', "settings", "More Apps", 6, 0, "", "scalePhone.GoToHomepage", {}) -- 7
 TriggerEvent('scalePhone.BuildSnapmatic', 'app_snapmatic') -- 8
 TriggerEvent('scalePhone.BuildThemeSettings', 'app_settings') -- 9
+TriggerEvent('scalePhone.BuildAppButton', 'app_settings', {text = "Phone Size", icon = 0, event = "scalePhone.OpenApp", eventParams = "settings_size"}, false, -1)
+
+TriggerEvent('scalePhone.BuildApp', 'settings_size', 'settings', "Phone Size", 0,0,"", "scalePhone.GoBackApp", {backApp = 'app_settings'})
+TriggerEvent('scalePhone.BuildAppButton', 'settings_size', {text = "Default", icon = 0, event = "critPhoneApps.ChangePhoneSize", eventParams = 'default'}, false, -1)
+TriggerEvent('scalePhone.BuildAppButton', 'settings_size', {text = "Small", icon = 0, event = "critPhoneApps.ChangePhoneSize", eventParams = 'small'}, false, -1)
+TriggerEvent('scalePhone.BuildAppButton', 'settings_size', {text = "Large", icon = 0, event = "critPhoneApps.ChangePhoneSize", eventParams = 'large'}, false, -1)
+TriggerEvent('scalePhone.BuildAppButton', 'settings_size', {text = "Huge", icon = 0, event = "critPhoneApps.ChangePhoneSize", eventParams = 'huge'}, false, -1)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
