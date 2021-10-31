@@ -5,6 +5,7 @@
 
 --[[  ::  Adding buttons to "More Apps"  ::  ]]--
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Rules", icon = 23, event = "scalePhone.OpenApp", eventParams = 'app_rules'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
+TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Trackify", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_track'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 
 -------------------------------------------------
 
@@ -33,4 +34,16 @@ AddEventHandler('critPhoneApps.OpenRuleView', function(data)
     TriggerEvent('scalePhone.OpenApp', 'app_rules_viewer', false)
 end)
 -------
+
+--trackify
+local trackPoints = {
+    {coords = vector3(2330.24,2571.88,46.67), alwaysOnPhone = true, range = 300, referenceID = "oxium_123_ref_01"}, -- go here :)
+}
+
+TriggerEvent('scalePhone.BuildApp', 'app_track', "trackifyView", "Trackify", 42, 0, "", "scalePhone.GoBackApp", {backApp = 'app_more'})
+
+for i,k in pairs(trackPoints) do
+    TriggerEvent('scalePhone.BuildAppButton', 'app_track', k, false, -1)
+end
+------------------
 
