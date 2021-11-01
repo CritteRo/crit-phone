@@ -6,6 +6,7 @@
 --[[  ::  Adding buttons to "More Apps"  ::  ]]--
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Rules", icon = 23, event = "scalePhone.OpenApp", eventParams = 'app_rules'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Trackify", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_track'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
+TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Hacking App", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_hackerman'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 
 -------------------------------------------------
 
@@ -36,14 +37,26 @@ end)
 -------
 
 --trackify
-local trackPoints = {
-    {coords = vector3(2330.24,2571.88,46.67), alwaysOnScreen = true, referenceID = "oxium_123_ref_01"}, -- go here :)
+local trackPoints = { --setting up an array, to create the initial tracking points
+    {coords = vector3(2330.24,2571.88,46.67)--[[XYZ coords on the map]], alwaysOnScreen = true --[[true = will always ping on the app, false = will only show when near it]], eventParams = {ref = "track_point_id_1"--[[we will use this to remove the point, if needed]]}}, -- go here :)
 }
 
-TriggerEvent('scalePhone.BuildApp', 'app_track', "trackifyView", "Trackify", 42, 0, "", "scalePhone.GoBackApp", {backApp = 'app_more'})
+TriggerEvent('scalePhone.BuildApp', 'app_track', "trackifyView", "Trackify", 42, 0, "", "scalePhone.GoBackApp", {backApp = 'app_more'}) --building the trackify app
 
-for i,k in pairs(trackPoints) do
+for i,k in pairs(trackPoints) do -- for each point in the array, create a "button", which is a point in the app
     TriggerEvent('scalePhone.BuildAppButton', 'app_track', k, false, -1)
 end
 ------------------
+
+---hackerman
+TriggerEvent('scalePhone.BuildApp', 'app_hackerman', 'securoHack', 'SecuroServ H4x0r Client', 57, 0, '', "scalePhone.GoBackApp", {backApp = 'app_more'}) --creating the hacking app
+
+TriggerEvent('scalePhone.BuildAppButton', 'app_hackerman', {coords = vector3(2330.24,2571.88,46.67)--[[coords]], weakSignalDist = 100.0--[[distance from where the app will show WEAK SIGNAL]], strongSignalDist = 8.0--[[distance from where you can start hacking]], hackCompleteMessage = "HACKED LOL"--[[Complete message]], timeNeeded = 5--[[in seconds]], event = "critPhoneApps.HackerClient.Hack"--[[event that will be triggered when hacking is complete]], eventParams = {message = "Test", refID = "hacking_point_1"}--[[unique param]]}, false, -1)
+--the button above is the point where you can start the hacking process.
+
+AddEventHandler('critPhoneApps.HackerClient.Hack', function(_data)
+    print(_data.message)
+    TriggerEvent('scalePhone.RemoveButtonUsingData', {appID = 'app_hackerman', dataSample = _data.refID})
+end)]]
+-----------------
 
