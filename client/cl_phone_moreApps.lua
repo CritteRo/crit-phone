@@ -57,6 +57,6 @@ TriggerEvent('scalePhone.BuildAppButton', 'app_hackerman', {coords = vector3(233
 AddEventHandler('critPhoneApps.HackerClient.Hack', function(_data)
     print(_data.message)
     TriggerEvent('scalePhone.RemoveButtonUsingData', {appID = 'app_hackerman', dataSample = _data.refID})
-end)]]
+end)
 -----------------
 
