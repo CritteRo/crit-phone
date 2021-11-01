@@ -37,7 +37,7 @@ end)
 
 --trackify
 local trackPoints = {
-    {coords = vector3(2330.24,2571.88,46.67), alwaysOnPhone = true, range = 300, referenceID = "oxium_123_ref_01"}, -- go here :)
+    {coords = vector3(2330.24,2571.88,46.67), alwaysOnScreen = true, referenceID = "oxium_123_ref_01"}, -- go here :)
 }
 
 TriggerEvent('scalePhone.BuildApp', 'app_track', "trackifyView", "Trackify", 42, 0, "", "scalePhone.GoBackApp", {backApp = 'app_more'})
