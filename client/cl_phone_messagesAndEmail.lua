@@ -19,9 +19,19 @@ AddEventHandler('critPhoneApps.ReceiveMessage', function(sms, isMine)
     end
     mess.eventParams.identifier = "/"..sms.contact.."/"..sms.message.."/"..tostring(isMine).."/" -- we set up a unique string in the message data, to make sure we can find it at a later stage.
     TriggerEvent('scalePhone.BuildAppButton', 'app_messages', mess, true, -1)
+       
     if isMine == false then
         TriggerEvent('scalePhone.AddAppNotification', 'app_messages')
-    end
+		PlaySoundFrontend(-1, "Text_Arrive_Tone", "Phone_SoundSet_Default", 0)
+		SetNotificationTextEntry("STRING")
+		AddTextComponentString(sms.message)
+		SetNotificationMessage("CHAR_MULTIPLAYER", "CHAR_MULTIPLAYER", true, 1, "<C>" .. sms.contact .. "</C>", nil)
+		DrawNotification(false, true)
+	else
+		SetNotificationTextEntry("STRING")
+		AddTextComponentString("Message was sent to <C>" .. sms.contact .. "</C>.")
+		DrawNotification(false, true)
+	end
 end)
 
 AddEventHandler('critPhoneApps.OpenMessage', function(data)
