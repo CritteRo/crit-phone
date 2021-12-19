@@ -2,7 +2,7 @@ RegisterNetEvent('critPhoneApps.UpdateContacts')
 RegisterNetEvent('critPhoneApps.ReceiveCall')
 
 AddEventHandler('critPhoneApps.UpdateContacts', function(contacts) --we receive contacts from the server-side.
-    TriggerEvent('scalePhone.ResetAppButtons', 1) --first. We clear all contacts that we currently have.
+    TriggerEvent('scalePhone.ResetAppButtons', 'app_contacts') --first. We clear all contacts that we currently have.
     
     for i,k in pairs(contacts) do
         --local idc = {name = k.name, pic = k.pic, isBot = k.isBot, event = "eventName", eventParams = {name = k.name, isBot = k.isBot}}
