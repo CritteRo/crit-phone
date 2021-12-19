@@ -152,17 +152,21 @@ AddEventHandler('critPhoneApps.sv.SendCall', function(name, pic, isBot, svID)
                     setPlayerCallChannel(src, row) --check sv_connections.lua to set the correct voice-chat resource.
                     TriggerClientEvent('critPhoneApps.ReceiveCall', src, "dialing", GetPlayerName(id), "CHAR_BLANK_ENTRY", false) --sending 'dialing' call update to source
                     TriggerClientEvent('critPhoneApps.ReceiveCall', id, "calling", GetPlayerName(src), "CHAR_BLANK_ENTRY", false) --sending the call to the called player.
+                    TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, true)
                 else
                     --sleep mode is activated for the other caller. Rejecting.
                     TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+                    TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, false)
                 end
             else
                 --player is already in a call. Rejecting yours.
                 TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+                TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, false)
             end
         else
             --player couldn't be found. Rejecting the call
             TriggerClientEvent('critPhoneApps.ReceiveCall', src, "rejected", name, pic, false)
+            TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, false)
         end
     end
 end)
@@ -188,6 +192,8 @@ AddEventHandler('critPhoneApps.sv.SendCallUpdate', function(update)
             if update == "answer" then
                 --this is where you set the Call Channel for caller2
                 setPlayerCallChannel(src, foundCall)
+                TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, true)
+                TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, other, true)
                 calls[foundCall].status = "connected"
                 TriggerClientEvent('critPhoneApps.ReceiveCall', src, "responded", GetPlayerName(other), "CHAR_BLANK_ENTRY", false)
                 TriggerClientEvent('critPhoneApps.ReceiveCall', other, "responded", GetPlayerName(src), "CHAR_BLANK_ENTRY", false)
@@ -198,6 +204,8 @@ AddEventHandler('critPhoneApps.sv.SendCallUpdate', function(update)
                 calls[foundCall].status = "completed"
                 setPlayerCallChannel(src, 0)
                 setPlayerCallChannel(other, 0)
+                TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, src, false)
+                TriggerClientEvent('critPhoneApps.SyncTalkingAnimation', -1, other, false)
                 TriggerClientEvent('critPhoneApps.ReceiveCall', src, "hangup", GetPlayerName(other), "CHAR_BLANK_ENTRY", false)
                 TriggerClientEvent('critPhoneApps.ReceiveCall', other, "hangup", GetPlayerName(src), "CHAR_BLANK_ENTRY", false)
             end

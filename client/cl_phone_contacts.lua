@@ -58,9 +58,11 @@ end
 AddEventHandler('critPhoneApps.ReceiveCall', function(status, name, pic, isBot) --receiving a call, or a call update.
     if status == "dialing" then --client IS CALLING someone
         StopPedRingtone(PlayerPedId())
+        SetPedIsTalkingOnPhone(PlayerPedId(), true)
         PlayPedRingtone("Remote_Ring", PlayerPedId(), 1)
     elseif status == 'rejected' then --call gets rejected, or other person is not available / in Sleep Mode / in other call etc.
         StopPedRingtone(PlayerPedId())
+        SetPedIsTalkingOnPhone(PlayerPedId(), false)
         TriggerEvent('scalePhone.BuildApp', 'call_screen', "callscreen", "Call", 4, 0, "", "critPhoneApps.CloseCall", {backApp = 'app_contacts', contact = name, pic = pic, status = "REJECTED"})
         TriggerEvent('scalePhone.OpenApp', 'call_screen')
         Citizen.Wait(3000)
@@ -70,17 +72,20 @@ AddEventHandler('critPhoneApps.ReceiveCall', function(status, name, pic, isBot) 
         end
     elseif status == 'calling' then --Client gets called by someone.
         StopPedRingtone(PlayerPedId())
+        SetPedIsTalkingOnPhone(PlayerPedId(), false)
         TriggerEvent('scalePhone.BuildApp', 'call_screen', "callscreen", "Call", 4, 0, "", "critPhoneApps.CloseCall", {backApp = 'app_contacts', contact = name, pic = pic, status = "IS CALLING", canAnswer = true, selectEvent = "critPhoneApps.AnswerCall"})
         TriggerEvent('scalePhone.OpenApp', 'call_screen', true)
         PlayPedRingtone("PHONE_GENERIC_RING_01", PlayerPedId(), 0)
     elseif status == 'responded' then --Call gets answered by other person. You now should be in the Call channel.
         StopPedRingtone(PlayerPedId())
+        SetPedIsTalkingOnPhone(PlayerPedId(), true)
         if exports.scalePhone:getAppOpen(false) == 'call_screen' then
             TriggerEvent('scalePhone.BuildApp', 'call_screen', "callscreen", "Call", 4, 0, "", "critPhoneApps.CloseCall", {backApp = 'app_contacts', contact = name, pic = pic, status = "CONNECTED"})
             TriggerEvent('scalePhone.OpenApp', 'call_screen')
         end
     elseif status == 'hangup' then --Other persone hanged up the call.
         StopPedRingtone(PlayerPedId())
+        SetPedIsTalkingOnPhone(PlayerPedId(), false)
         if exports.scalePhone:getAppOpen(false) == 'call_screen' then
             TriggerEvent('scalePhone.BuildApp', 'call_screen', "callscreen", "Call", 4, 0, "", "critPhoneApps.CloseCall", {backApp = 'app_contacts', contact = name, pic = pic, status = "CALL ENDED"})
             TriggerEvent('scalePhone.OpenApp', 'call_screen')
@@ -109,3 +114,34 @@ AddEventHandler('critPhoneApps.SetPlayerCallChannel', function(channel)
     exports['mumble-voip']:SetCallChannel(tonumber(channel))
 end)
 ]]
+
+function SetPedIsTalkingOnPhone(ped, isTalking)
+    if isTalking == true then
+        RequestAnimDict("cellphone@")
+        while not HasAnimDictLoaded("cellphone@") do
+            RequestAnimDict("cellphone@")
+            Citizen.Wait(10)
+        end
+        TaskPlayPhoneGestureAnimation(ped, "cellphone@", "cellphone_call_listen_base", "BONEMASK_HEAD_NECK_AND_ARMS", 0.5, 0.0, 1, 1)
+    else
+        TaskStopPhoneGestureAnimation(ped)
+    end
+end
+
+RegisterNetEvent('critPhoneApps.SyncTalkingAnimation')
+AddEventHandler('critPhoneApps.SyncTalkingAnimation', function(srcID, isTalking)
+    local player = GetPlayerFromServerId(tonumber(srcID)) --converting source(or serverID) to local ID
+    local ped = GetPlayerPed(player) --getting the player (in case we find it)
+    if player ~= PlayerId() and GetPlayerPed(player) ~= 0 then --making sure we are not changing OUR ped, and that the ped actually exists
+        if isTalking == true then
+            RequestAnimDict("cellphone@")
+            while not HasAnimDictLoaded("cellphone@") do
+                RequestAnimDict("cellphone@")
+                Citizen.Wait(10)
+            end
+            TaskPlayPhoneGestureAnimation(ped, "cellphone@", "cellphone_call_listen_base", "BONEMASK_HEAD_NECK_AND_ARMS", 0.5, 0.0, 1, 1)
+        else
+            TaskStopPhoneGestureAnimation(ped)
+        end
+    end
+end)
