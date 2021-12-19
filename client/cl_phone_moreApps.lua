@@ -7,6 +7,7 @@
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Rules", icon = 23, event = "scalePhone.OpenApp", eventParams = 'app_rules'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Trackify", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_track'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "Hacking App", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_hackerman'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
+TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "IPTV", icon = 0, event = "scalePhone.OpenApp", eventParams = 'app_television'}, false, -1) --icon = 0 means that it wont show at all. Icons are different than the homepage ones.
 
 -------------------------------------------------
 
@@ -59,4 +60,7 @@ AddEventHandler('critPhoneApps.HackerClient.Hack', function(_data)
     TriggerEvent('scalePhone.RemoveButtonUsingData', {appID = 'app_hackerman', dataSample = _data.refID})
 end)
 -----------------
+
+---in-game tv
+TriggerEvent('scalePhone.BuildApp', "app_television", "tv", "IPTV", 59, 0, "openEvent", "scalePhone.GoBackApp", {backApp = "app_more"}) --hopefully might not confuse someone to think that it's real iptv
 
