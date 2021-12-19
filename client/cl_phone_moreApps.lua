@@ -13,13 +13,13 @@ TriggerEvent('scalePhone.BuildAppButton', 'app_more', {text = "IPTV", icon = 0, 
 
 --Rules
 TriggerEvent('scalePhone.BuildApp', 'app_rules', "emailList", "Rules", 0, 0, "", 'scalePhone.GoBackApp', {backApp = 'app_more'})
-TriggerEvent('scalePhone.BuildApp', 'app_rules_viewer', "emailView", "Rule", 0, 0, "", 'scalePhone.GoBackApp', {backApp = 'app_rules', to = "", from = "", message = "", title = ""})
+TriggerEvent('scalePhone.BuildApp', 'app_rules_viewer', "emailView", "Rule", 0, 0, "", 'scalePhone.GoBackApp', {backApp = 'app_rules', to = "", from = "", message = "", title = "", canOpenMenu = false, selectEvent = ""})
 
 appRules = { --you can add more rules here.
-    {title = "Section 1", to = "this is deprecated. not actually used by the framework", from = "Server Admins", message = "Section 1 is the first section of the rules.\n\nYou can add general stuff here, like:\n1. Don't be rude.\n2. Don't be weird.\n3. Check rule 1.", event = 'critPhoneApps.OpenRuleView'},
-    {title = "Section 2", to = "this is deprecated. not actually used by the framework", from = "Server Admins", message = "You can use section 2 for other stuff, idk\n\n", event = 'critPhoneApps.OpenRuleView'},
-    {title = "Section 3", to = "this is deprecated. not actually used by the framework", from = "Server Admins", message = "You really think you would need this many rules?\n\n\nok...", event = 'critPhoneApps.OpenRuleView'},
-    {title = "Section 4", to = "this is deprecated. not actually used by the framework", from = "Server Admins", message = "Just my opinion...but I don't think many people will read this..", event = 'critPhoneApps.OpenRuleView'},
+    {title = "Section 1", to = "", from = "Server Admins", message = "Section 1 is the first section of the rules.\n\nYou can add general stuff here, like:\n1. Don't be rude.\n2. Don't be weird.\n3. Check rule 1.", event = 'critPhoneApps.OpenRuleView', canOpenMenu = false, selectEvent = ""},
+    {title = "Section 2", to = "", from = "Server Admins", message = "You can use section 2 for other stuff, idk\n\n", event = 'critPhoneApps.OpenRuleView', canOpenMenu = false, selectEvent = ""},
+    {title = "Section 3", to = "", from = "Server Admins", message = "You really think you would need this many rules?\n\n\nok...", event = 'critPhoneApps.OpenRuleView', canOpenMenu = false, selectEvent = ""},
+    {title = "Section 4", to = "", from = "Server Admins", message = "Just my opinion...but I don't think many people will read this..", event = 'critPhoneApps.OpenRuleView', canOpenMenu = false, selectEvent = ""},
 }
 
 Citizen.CreateThread(function()
